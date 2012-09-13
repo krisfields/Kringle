@@ -164,7 +164,7 @@
     PFObject *exchangeUser = [PFObject objectWithClassName:@"Exchange"];
     [exchangeUser setObject:[NSNumber numberWithInt:1] forKey:@"exchangeID"];
     [exchangeUser setObject:user forKey:@"user"];
-
+    [exchangeUser save];
     
     PFUser *hero = [PFUser currentUser];
     [hero setObject:self.userName.text forKey:@"name"];
@@ -198,8 +198,9 @@
     PFFile *imageFile = [PFFile fileWithName:@"Image.jpg" data:imageData];
     [hero setObject:imageFile forKey:@"image"];
 
-    [exchangeUser save];
-    [hero save];
+    [hero saveInBackground];
+
+    
 
     
 }
