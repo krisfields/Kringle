@@ -13,7 +13,7 @@
 #import <Socialize/Socialize.h>
 
 
-@interface ExchangeViewController () <PF_FBRequestDelegate, UITextFieldDelegate>
+@interface ExchangeViewController () </*PF_FBRequestDelegate, */UITextFieldDelegate>
 - (IBAction)participateButton:(id)sender;
 - (IBAction)rulesButton:(id)sender;
 @property (nonatomic, retain) SZActionBar *actionBar;
@@ -41,53 +41,49 @@
     
     
     // Create request for user's facebook data
-    NSString *requestPath = @"me?fields=name,gender,birthday,email";
-    
-    // Send request to facebook
-    PF_FBRequest *request = [PF_FBRequest requestForGraphPath:requestPath];
-
-    [request startWithCompletionHandler:^(PF_FBRequestConnection *connection,
-                                          id result,
-                                          NSError *error) {
-        if (!error) {
-            
-            
-            self.userInfoFormVC.userData = (NSDictionary *)result; // The result is a dictionary
-            
-            
-            self.userInfoFormVC.imageData = [[NSMutableData alloc] init]; // the image will be loaded in here
-            
-            NSURL *profilePictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [self.userInfoFormVC.userData objectForKey:@"id"]]];
-            NSLog(@"profilePictureURl = %@",profilePictureURL);
-            NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f]; // Facebook profile picture cache policy: Expires in 2 weeks
-            NSLog(@"profilePictureURLRequest = %@", profilePictureURLRequest);
-            [NSURLConnection connectionWithRequest:profilePictureURLRequest delegate:self.userInfoFormVC];
-            
-            
-            
-
-            // Create URLRequest
-//            NSString *pictureURL = [[[userData objectForKey:@"picture"] objectForKey:@"data"] objectForKey:@"url"];
-//            NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:pictureURL] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
-//            NSLog(@"%@", pictureURL);
-//            // Run request asynchronously
-//            [NSURLConnection connectionWithRequest:urlRequest delegate:self];
-            // Now add the data to the UI elements
-        }
-    }];
+//    NSString *requestPath = @"me?fields=name,gender,birthday,email";
+//    
+//    // Send request to facebook
+//    PF_FBRequest *request = [PF_FBRequest requestForGraphPath:requestPath];
+//
+//    [request startWithCompletionHandler:^(PF_FBRequestConnection *connection,
+//                                          id result,
+//                                          NSError *error) {
+//        if (!error) {
+//            
+//            
+//            self.userInfoFormVC.userData = (NSDictionary *)result; // The result is a dictionary
+//            
+//            
+//            self.userInfoFormVC.imageData = [[NSMutableData alloc] init]; // the image will be loaded in here
+//            
+//            NSURL *profilePictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [self.userInfoFormVC.userData objectForKey:@"id"]]];
+//            NSLog(@"profilePictureURl = %@",profilePictureURL);
+//            NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f]; // Facebook profile picture cache policy: Expires in 2 weeks
+//            NSLog(@"profilePictureURLRequest = %@", profilePictureURLRequest);
+//            [NSURLConnection connectionWithRequest:profilePictureURLRequest delegate:self.userInfoFormVC];
+//            
+//        }
+//    }];
     
     
-    
-    // Do any additional setup after loading the view from its nib.
 }
 - (void) viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBar.hidden = YES;
     if (self.actionBar == nil) {
-        self.entity = [SZEntity entityWithKey:@"some_entity" name:@"Some Entity"];
+        self.entity = [SZEntity entityWithKey:@"http://www.kringleapp.com" name:@"1st Annual Secret Santa Gift Exchange"];
         self.actionBar = [SZActionBarUtils showActionBarWithViewController:self entity:self.entity options:nil];
+        SZActionButton *userSettings = [SZActionButton actionButtonWithIcon:nil title:@"All about you"];
+        userSettings.actionBlock = ^(SZActionButton *button, SZActionBar *bar) {
+            [self.navigationController pushViewController:self.userInfoFormVC animated:YES];
+        };
+        self.actionBar.itemsLeft = [NSArray arrayWithObject:userSettings];
+        
     }
-    self.actionBar.backgroundColor = [UIColor yellowColor];
+    self.actionBar.backgroundImage = [UIImage new];
+    self.actionBar.backgroundColor = [UIColor colorWithRed:.75 green:.81568 blue:.651 alpha:.8];
+     
 
 }
 

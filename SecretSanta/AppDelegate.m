@@ -19,6 +19,7 @@
                   clientKey:@"cFHIjQqQcjqjhTUrdKBxWfXaZ4rwtKsqupQJ1Ija"];
     [PFFacebookUtils initializeWithApplicationId:@"443486415704360"];
     
+    
     // set the socialize api key and secret, register your app here: http://www.getsocialize.com/apps/
     [Socialize storeConsumerKey:@"c0284bd2-af49-4830-a466-c217417e13cb"];
     [Socialize storeConsumerSecret:@"a0f64f4c-ba7c-4191-89ef-fefc63ce3399"];
@@ -32,7 +33,7 @@
     return YES;
 }
 
-#pragma parse-facebook login
+#pragma parse-socialize-facebook login
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     return [PFFacebookUtils handleOpenURL:url];
@@ -42,6 +43,7 @@
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [PFFacebookUtils handleOpenURL:url];
 }
+
 #pragma normal app delegate methods
 - (void)applicationWillResignActive:(UIApplication *)application
 {

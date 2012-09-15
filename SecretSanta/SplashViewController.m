@@ -12,6 +12,8 @@
 #import <Parse/Parse.h>
 #import "User.h"
 #import <Socialize/Socialize.h>
+#import "ComeBackSoonViewController.h"
+#import "MissedExchangeViewController.h"
 
 @interface SplashViewController ()
 - (IBAction)facebookButton:(id)sender;
@@ -32,7 +34,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    PFUser *user = [PFUser currentUser];
+    PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
+    [query whereKey:@"user" equalTo:user];
+    NSArray* userInExchange = [query findObjects];
+    if ([userInExchange count] > 0) {
+        [User ourHero].isParticipating = YES;
+    };
+    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -50,26 +59,34 @@
 
 - (IBAction)facebookButton:(id)sender {
     
-    NSString *dateString = @"11/15/2012";
+    if (!self.dateString) {
+        self.dateString = @"09/18/2012";
+    }
+
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MM/dd/yyyy"];
-    NSDate *drawNamesDate = [formatter dateFromString:dateString];
+    NSDate *drawNamesDate = [formatter dateFromString:self.dateString];
     NSTimeInterval timeInt = [[NSDate date] timeIntervalSinceDate:drawNamesDate];
     UINavigationController *navController;
-    if (timeInt <= 0) {
-        ExchangeViewController *exchangeVC = [ExchangeViewController new];
-        navController = [[UINavigationController alloc] initWithRootViewController:exchangeVC];
+    UIViewController *viewController;
+    if (timeInt <= 0 /*&& [[User ourHero] isParticipating] == NO*/) {
+        viewController = [ExchangeViewController new];
+    } else if (timeInt <= 0 && [[User ourHero] isParticipating] == YES) {
+        viewController = [ComeBackSoonViewController new];
+    } else if ([[User ourHero] isParticipating] == NO) {
+        viewController = [MissedExchangeViewController new];
     } else {
-        DrawNameViewController *drawNameVC = [DrawNameViewController new];
-        navController = [[UINavigationController alloc] initWithRootViewController:drawNameVC];
+        viewController = [DrawNameViewController new];
     }
-    
+    navController = [[UINavigationController alloc] initWithRootViewController:viewController];
     navController.navigationBar.tintColor =[UIColor colorWithRed:.62 green:.74 blue:.463 alpha:1.0];
     NSArray *permissionsArray = @[@"user_birthday", @"offline_access", @"email"];
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         if (user) {
             User *hero = [User ourHero];
+            [hero getAndSetFacebookUserData];
             hero.pfUserObject = user;
+            [self linkToFacebook];
         }
         if (!user) {
             NSLog(@"Uh oh. The user cancelled the Facebook login.");
@@ -84,18 +101,18 @@
 
 
 }
-//- (void)linkToFacebook {
-//    [SZFacebookUtils setAppId:@"fb443486415704360"];
-//    
-//    
-//    // These should come from your own facebook auth process
-//    NSString *existingToken = @"EXISTING_TOKEN";
-//    NSDate *existingExpiration = [NSDate distantFuture];
-//    
-//    [SZFacebookUtils linkWithAccessToken:existingToken expirationDate:existingExpiration success:^(id<SocializeFullUser> user) {
-//        NSLog(@"Link successful");
-//    } failure:^(NSError *error) {
-//        NSLog(@"Link failed: %@", [error localizedDescription]);
-//    }];
-//}
+- (void)linkToFacebook {
+    [SZFacebookUtils setAppId:@"fb443486415704360"];
+    
+    
+    // These should come from your own facebook auth process
+    NSString *existingToken = [[PFFacebookUtils session] accessToken];
+    NSDate *existingExpiration = [[PFFacebookUtils session] expirationDate];
+    
+    [SZFacebookUtils linkWithAccessToken:existingToken expirationDate:existingExpiration success:^(id<SocializeFullUser> user) {
+        NSLog(@"Link successful");
+    } failure:^(NSError *error) {
+        NSLog(@"Link failed: %@", [error localizedDescription]);
+    }];
+}
 @end

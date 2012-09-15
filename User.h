@@ -9,9 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-@interface User : NSObject
+@interface User : NSObject <PF_FBRequestDelegate, NSURLConnectionDelegate>
 
 @property (strong, nonatomic) PFUser *pfUserObject;
-
+@property (nonatomic) BOOL isParticipating;
+@property (strong, nonatomic) NSDictionary *facebookUserData;
+@property (strong, nonatomic) UIImage *userImage;
 + (User *)ourHero;
+- (void)getAndSetFacebookUserData;
 @end

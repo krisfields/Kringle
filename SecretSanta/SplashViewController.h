@@ -10,4 +10,5 @@
 
 @interface SplashViewController : UIViewController
 
+@property (strong, nonatomic) NSString *dateString;
 @end

@@ -23,7 +23,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *userZip;
 @property (weak, nonatomic) IBOutlet UITextField *userCountry;
 @property (weak, nonatomic) IBOutlet UIDatePicker *userAge;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *userSex;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *userGender;
 @property (weak, nonatomic) IBOutlet UITextField *userLike1;
 @property (weak, nonatomic) IBOutlet UITextField *userLike2;
 @property (weak, nonatomic) IBOutlet UITextField *userLike3;
@@ -47,7 +47,7 @@
 @synthesize userZip;
 @synthesize userCountry;
 @synthesize userAge;
-@synthesize userSex;
+@synthesize userGender;
 @synthesize userLike1;
 @synthesize userLike2;
 @synthesize userLike3;
@@ -58,7 +58,7 @@
 @synthesize userStalkMe3;
 @synthesize userStalkMe4;
 
-@synthesize userImage;
+//@synthesize userImage;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -73,7 +73,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    PFUser *currentUser = [PFUser currentUser];
+    User *hero = [User ourHero];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     
     // prevents the scroll view from swallowing up the touch event of child buttons
@@ -81,23 +82,57 @@
     
     [[self castViewToScrollView] addGestureRecognizer:tapGesture];
     
-    self.userImage.image = [UIImage imageWithData:self.imageData];
-        self.title = @"All about you...";
-    NSString *name = [self.userData objectForKey:@"name"];
-    NSString *gender = [self.userData objectForKey:@"gender"];
-    NSString *birthday = [self.userData objectForKey:@"birthday"];
-    NSString *email = [self.userData objectForKey:@"email"];
-    self.userName.text = name;
-    self.userEmail.text = email;
+    self.userImage.image = hero.userImage;
+    self.title = @"All about you...";
+    
+    if ([currentUser valueForKey:@"name"]) {
+        self.userName.text = [currentUser valueForKey:@"name"];
+    } else {
+        self.userName.text = [hero.facebookUserData objectForKey:@"name"];
+    }
+    NSString *gender;
+    if ([currentUser valueForKey:@"gender"] ) {
+        gender = [currentUser valueForKey:@"gender"];
+    } else {
+        gender = [hero.facebookUserData objectForKey:@"gender"];
+    }
+    NSString *birthday;
+    if ([currentUser valueForKey:@"birthday"] ) {
+        birthday = [currentUser valueForKey:@"birthday"];
+    } else if ([hero.facebookUserData objectForKey:@"birthday"]){
+        birthday = [hero.facebookUserData objectForKey:@"birthday"];
+    } else {
+        birthday = @"01/01/1980";
+    }
+    if ([currentUser valueForKey:@"email"]) {
+        self.userEmail.text = [currentUser valueForKey:@"email"];
+    } else {
+        self.userEmail.text = [hero.facebookUserData objectForKey:@"email"];
+    }
+    self.userStreetAddress.text = [currentUser valueForKey:@"streetAddress"];
+    self.userCity.text = [currentUser valueForKey:@"city"];
+    self.userState.text = [currentUser valueForKey:@"state"];
+    self.userZip.text = [currentUser valueForKey:@"zip"];
+    self.userCountry.text = [currentUser valueForKey:@"country"];
+    self.userLike1.text = [currentUser valueForKey:@"userLike1"];
+    self.userLike2.text = [currentUser valueForKey:@"userLike2"];
+    self.userLike3.text = [currentUser valueForKey:@"userLike3"];
+    self.userLike4.text = [currentUser valueForKey:@"userLike4"];
+    self.userLike5.text = [currentUser valueForKey:@"userLike5"];
+    self.userStalkMe1.text = [currentUser valueForKey:@"userStalkMe1"];
+    self.userStalkMe2.text = [currentUser valueForKey:@"userStalkMe2"];
+    self.userStalkMe3.text = [currentUser valueForKey:@"userStalkMe3"];
+    self.userStalkMe4.text = [currentUser valueForKey:@"userStalkMe4"];
+    
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"MM/dd/yyyy"];
-    self.userAge.date = [df dateFromString: birthday];
-    if ([gender isEqualToString:@"female"]) {
-        self.userSex.selectedSegmentIndex = 0;
-    } else if ([gender isEqualToString:@"male"]) {
-        self.userSex.selectedSegmentIndex = 1;
+    self.userAge.date = [df dateFromString:birthday];
+    if ([gender isEqualToString:@"Female"]) {
+        self.userGender.selectedSegmentIndex = 0;
+    } else if ([gender isEqualToString:@"Male"]) {
+        self.userGender.selectedSegmentIndex = 1;
     } else {
-        self.userSex.selectedSegmentIndex = 2;
+        self.userGender.selectedSegmentIndex = 2;
     }
     
     
@@ -107,17 +142,17 @@
 {
     [activeField resignFirstResponder];
 }
--(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    NSLog(@"appending to imageData");
-    [self.imageData appendData:data]; // Build the image
-}
-
-// Called when the entire image is finished downloading
--(void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    // Set the image in the header imageView
-    NSLog(@"Set image");
-    self.userImage.image = [UIImage imageWithData:self.imageData];
-}
+//-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+//    NSLog(@"appending to imageData");
+//    [self.imageData appendData:data]; // Build the image
+//}
+//
+//// Called when the entire image is finished downloading
+//-(void)connectionDidFinishLoading:(NSURLConnection *)connection {
+//    // Set the image in the header imageView
+//    NSLog(@"Set image");
+//    self.userImage.image = [UIImage imageWithData:self.imageData];
+//}
 
 - (void) viewWillAppear:(BOOL)animated
 {
@@ -134,7 +169,7 @@
     [self setUserZip:nil];
     [self setUserCountry:nil];
     [self setUserAge:nil];
-    [self setUserSex:nil];
+    [self setUserGender:nil];
     
     [self setUserLike1:nil];
     [self setUserLike2:nil];
@@ -159,49 +194,86 @@
     [activeField resignFirstResponder];
     ComeBackSoonViewController *comeBackVC = [ComeBackSoonViewController new];
     [self presentModalViewController:comeBackVC animated:YES];
-    [self.navigationController pushViewController:comeBackVC animated:YES];
-    PFUser *user = [PFUser currentUser];
-    PFObject *exchangeUser = [PFObject objectWithClassName:@"Exchange"];
-    [exchangeUser setObject:[NSNumber numberWithInt:1] forKey:@"exchangeID"];
-    [exchangeUser setObject:user forKey:@"user"];
-    [exchangeUser save];
-    
     PFUser *hero = [PFUser currentUser];
-    [hero setObject:self.userName.text forKey:@"name"];
-    [hero setObject:self.userEmail.text forKey:@"email"];
-    [hero setObject:self.userStreetAddress.text forKey:@"streetAddress"];
-    [hero setObject:self.userCity.text forKey:@"city"];
-    [hero setObject:self.userState.text forKey:@"state"];
-    [hero setObject:self.userZip.text forKey:@"zip"];
-    if (self.userSex.selectedSegmentIndex == 0) {
-        [hero setObject:@"Female" forKey:@"sex"];
-    } else if (self.userSex.selectedSegmentIndex == 1) {
-        [hero setObject:@"Male" forKey:@"sex"];
-    } else {
-        [hero setObject:@"Robot" forKey:@"sex"];
+    PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
+    [query whereKey:@"user" equalTo:hero];
+    PFObject *object = [query getFirstObject];
+    if (!object) {
+        PFObject *userInExchange = [PFObject objectWithClassName:@"UsersInExchange"];
+        [userInExchange setObject:[NSNumber numberWithInt:1] forKey:@"exchangeID"];
+        [userInExchange setObject:hero forKey:@"user"];
+        [userInExchange setObject:[NSNull null] forKey:@"givingTo"];
+        [userInExchange save];
     }
-    [hero setObject:self.userLike1.text forKey:@"userLike1"];
-    [hero setObject:self.userLike2.text forKey:@"userLike2"];
-    [hero setObject:self.userLike3.text forKey:@"userLike3"];
-    [hero setObject:self.userLike4.text forKey:@"userLike4"];
-    [hero setObject:self.userLike5.text forKey:@"userLike5"];
-    [hero setObject:self.userStalkMe1.text forKey:@"userStalkMe1"];
-    [hero setObject:self.userStalkMe2.text forKey:@"userStalkMe2"];
-    [hero setObject:self.userStalkMe3.text forKey:@"userStalkMe3"];
-    [hero setObject:self.userStalkMe4.text forKey:@"userStalkMe4"];
+
+    if (self.userName.text) {
+        [hero setObject:self.userName.text forKey:@"name"];
+    }
+    if (self.userEmail.text) {
+        [hero setObject:self.userEmail.text forKey:@"email"];
+    }
+    if (self.userStreetAddress.text) {
+        [hero setObject:self.userStreetAddress.text forKey:@"streetAddress"];
+    }
+    if (self.userCity.text) {
+        [hero setObject:self.userCity.text forKey:@"city"];
+    }
+    if (self.userState.text) {
+        [hero setObject:self.userState.text forKey:@"state"];
+    }
+    if (self.userZip.text) {
+        [hero setObject:self.userZip.text forKey:@"zip"];
+    }
+    if (self.userCountry.text) {
+        [hero setObject:self.userCountry.text forKey:@"country"];
+    }
+    if (self.userGender.selectedSegmentIndex == 0) {
+        [hero setObject:@"Female" forKey:@"gender"];
+    } else if (self.userGender.selectedSegmentIndex == 1) {
+        [hero setObject:@"Male" forKey:@"gender"];
+    } else {
+        [hero setObject:@"Robot" forKey:@"gender"];
+    }
+    if (self.userLike1.text) {
+        [hero setObject:self.userLike1.text forKey:@"userLike1"];
+    }
+    if (self.userLike2.text) {
+        [hero setObject:self.userLike2.text forKey:@"userLike2"];
+    }
+    if (self.userLike3.text) {
+        [hero setObject:self.userLike3.text forKey:@"userLike3"];
+    }
+    if (self.userLike4.text) {
+        [hero setObject:self.userLike4.text forKey:@"userLike4"];
+    }
+    if (self.userLike5.text) {
+        [hero setObject:self.userLike5.text forKey:@"userLike5"];
+    }
+    if (self.userStalkMe1.text) {
+        [hero setObject:self.userStalkMe1.text forKey:@"userStalkMe1"];
+    }
+    if (self.userStalkMe2.text) {
+        [hero setObject:self.userStalkMe2.text forKey:@"userStalkMe2"];
+    }
+    if (self.userStalkMe3.text) {
+        [hero setObject:self.userStalkMe3.text forKey:@"userStalkMe3"];
+    }
+    if (self.userStalkMe4.text) {
+        [hero setObject:self.userStalkMe4.text forKey:@"userStalkMe4"];
+    }
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"dd/MM/yyyy"];    
+    [formatter setDateFormat:@"MM/dd/yyyy"];
     NSString *birthday = [formatter stringFromDate:self.userAge.date];
     [hero setObject:birthday forKey:@"birthday"];
     
     NSData *imageData = UIImagePNGRepresentation(self.userImage.image);
     PFFile *imageFile = [PFFile fileWithName:@"Image.jpg" data:imageData];
     [hero setObject:imageFile forKey:@"image"];
-
-    [hero saveInBackground];
-
     
-
+    [hero saveInBackground];
+    
+    
+    
     
 }
 // Call this method somewhere in your view controller setup code.

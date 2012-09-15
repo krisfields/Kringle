@@ -12,6 +12,6 @@
 @interface UserInfoFormViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
-@property (strong, nonatomic) NSDictionary *userData;
-@property (strong, nonatomic) NSMutableData *imageData;
+//@property (strong, nonatomic) NSDictionary *userData;
+//@property (strong, nonatomic) NSMutableData *imageData;
 @end
