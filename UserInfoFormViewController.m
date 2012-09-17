@@ -134,25 +134,12 @@
     } else {
         self.userGender.selectedSegmentIndex = 2;
     }
-    
-    
-    // Do any additional setup after loading the view from its nib.
 }
 -(void)hideKeyboard
 {
     [activeField resignFirstResponder];
 }
-//-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-//    NSLog(@"appending to imageData");
-//    [self.imageData appendData:data]; // Build the image
-//}
-//
-//// Called when the entire image is finished downloading
-//-(void)connectionDidFinishLoading:(NSURLConnection *)connection {
-//    // Set the image in the header imageView
-//    NSLog(@"Set image");
-//    self.userImage.image = [UIImage imageWithData:self.imageData];
-//}
+
 
 - (void) viewWillAppear:(BOOL)animated
 {
@@ -193,7 +180,8 @@
 - (IBAction)submitUserInfoButton:(id)sender {
     [activeField resignFirstResponder];
     ComeBackSoonViewController *comeBackVC = [ComeBackSoonViewController new];
-    [self presentModalViewController:comeBackVC animated:YES];
+    [self.navigationController pushViewController:comeBackVC animated:YES];
+//    [self presentModalViewController:comeBackVC animated:YES];
     PFUser *hero = [PFUser currentUser];
     PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
     [query whereKey:@"user" equalTo:hero];

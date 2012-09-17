@@ -34,13 +34,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    PFUser *user = [PFUser currentUser];
-    PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
-    [query whereKey:@"user" equalTo:user];
-    NSArray* userInExchange = [query findObjects];
-    if ([userInExchange count] > 0) {
-        [User ourHero].isParticipating = YES;
-    };
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -60,32 +53,39 @@
 - (IBAction)facebookButton:(id)sender {
     
     if (!self.dateString) {
-        self.dateString = @"09/18/2012";
+        self.dateString = @"09/10/2012";
     }
 
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MM/dd/yyyy"];
     NSDate *drawNamesDate = [formatter dateFromString:self.dateString];
     NSTimeInterval timeInt = [[NSDate date] timeIntervalSinceDate:drawNamesDate];
-    UINavigationController *navController;
-    UIViewController *viewController;
-    if (timeInt <= 0 /*&& [[User ourHero] isParticipating] == NO*/) {
-        viewController = [ExchangeViewController new];
-    } else if (timeInt <= 0 && [[User ourHero] isParticipating] == YES) {
-        viewController = [ComeBackSoonViewController new];
-    } else if ([[User ourHero] isParticipating] == NO) {
-        viewController = [MissedExchangeViewController new];
-    } else {
-        viewController = [DrawNameViewController new];
-    }
-    navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    navController.navigationBar.tintColor =[UIColor colorWithRed:.62 green:.74 blue:.463 alpha:1.0];
     NSArray *permissionsArray = @[@"user_birthday", @"offline_access", @"email"];
+    __block UINavigationController *navController;
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         if (user) {
             User *hero = [User ourHero];
+            PFUser *pfUser = [PFUser currentUser];
+            PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
+            [query whereKey:@"user" equalTo:pfUser];
+            NSArray* userInExchange = [query findObjects];
+            if ([userInExchange count] > 0) {
+                hero.isParticipating = YES;
+            };
             [hero getAndSetFacebookUserData];
             hero.pfUserObject = user;
+            UIViewController *viewController;
+            if (timeInt <= 0 /*&& [[User ourHero] isParticipating] == NO*/) {
+                viewController = [ExchangeViewController new];
+            } else if (timeInt <= 0 && [[User ourHero] isParticipating] == YES) {
+                viewController = [ComeBackSoonViewController new];
+            } else if ([[User ourHero] isParticipating] == NO) {
+                viewController = [MissedExchangeViewController new];
+            } else {
+                viewController = [DrawNameViewController new];
+            }
+            navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.navigationBar.tintColor =[UIColor colorWithRed:.62 green:.74 blue:.463 alpha:1.0];
             [self linkToFacebook];
         }
         if (!user) {

@@ -24,7 +24,7 @@
     [Socialize storeConsumerKey:@"c0284bd2-af49-4830-a466-c217417e13cb"];
     [Socialize storeConsumerSecret:@"a0f64f4c-ba7c-4191-89ef-fefc63ce3399"];
     [SZFacebookUtils setAppId:@"443486415704360"];
-    
+    [SZTwitterUtils setConsumerKey:@"aEuS53avin3HusG15hfLGg" consumerSecret:@"h0Mqrt0xDAXEEhMPDjvrDejzzCbKjGL1TTFjKyo5Ac"];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];

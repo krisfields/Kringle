@@ -45,14 +45,14 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBar.hidden = YES;
+    self.title = @"See you soon";
     if (self.actionBar == nil) {
         self.entity = [SZEntity entityWithKey:@"http://www.kringleapp.com" name:@"1st Annual Secret Santa Gift Exchange"];
         self.actionBar = [SZActionBarUtils showActionBarWithViewController:self entity:self.entity options:nil];
         SZActionButton *userSettings = [SZActionButton actionButtonWithIcon:nil title:@"All about you"];
         userSettings.actionBlock = ^(SZActionButton *button, SZActionBar *bar) {
             NSLog(@"userSettings button pressed");
-            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:self.userInfoFormVC];
-            [self presentModalViewController:navController animated:YES];
+            [self.navigationController pushViewController:self.userInfoFormVC animated:YES];
         };
         SZActionButton *letsPretend = [SZActionButton actionButtonWithIcon:nil title:@"<<"];
         letsPretend.actionBlock = ^(SZActionButton *button, SZActionBar *bar) {

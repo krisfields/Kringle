@@ -49,17 +49,15 @@
 
 - (IBAction)drawNameButton:(id)sender {
     [self setUsersInExchangeGivingToAndReceivingFromToNull];
-    //use this in testing
+    //use this to test multiple users
 //    [self testDrawNameMethod];
-    //use this in production
+    //use this in production/test current user
     [self drawName:[PFUser currentUser]];
 }
 - (void)drawName:(PFUser *)personDrawing
 {
     PFQuery *query = [PFQuery queryWithClassName:@"UsersInExchange"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        NSLog(@"objects not in order = %@", objects);
-        //find the correct object in objects using objectId
         [query whereKey:@"user" equalTo:personDrawing];
         NSArray *currentUserAsOnlyObjectInArray = [query findObjects];
         PFObject *currentUserInExchange = [currentUserAsOnlyObjectInArray objectAtIndex:0];

@@ -627,6 +627,7 @@
 				161204F916006FD7006CA2F5 /* User.m */,
 				167EAC7915FEA7A500F3F880 /* SplashViewController.h */,
 				167EAC7A15FEA7A500F3F880 /* SplashViewController.m */,
+				167EAC7B15FEA7A500F3F880 /* SplashViewController.xib */,
 				168FCE3C16025C8800D3C56A /* MissedExchangeViewController.h */,
 				168FCE3D16025C8800D3C56A /* MissedExchangeViewController.m */,
 				168FCE3E16025C8800D3C56A /* MissedExchangeViewController.xib */,
@@ -648,7 +649,6 @@
 				16A3205E160147560034FF18 /* ComeBackSoonViewController.h */,
 				16A3205F160147560034FF18 /* ComeBackSoonViewController.m */,
 				16A32060160147560034FF18 /* ComeBackSoonViewController.xib */,
-				167EAC7B15FEA7A500F3F880 /* SplashViewController.xib */,
 				167EACA415FEE97100F3F880 /* assets */,
 				167EAC6915FEA77700F3F880 /* Supporting Files */,
 			);

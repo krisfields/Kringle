@@ -39,34 +39,7 @@
     self.title = @"Gift Exchange";
         self.userInfoFormVC = [UserInfoFormViewController new];
     
-    
-    // Create request for user's facebook data
-//    NSString *requestPath = @"me?fields=name,gender,birthday,email";
-//    
-//    // Send request to facebook
-//    PF_FBRequest *request = [PF_FBRequest requestForGraphPath:requestPath];
-//
-//    [request startWithCompletionHandler:^(PF_FBRequestConnection *connection,
-//                                          id result,
-//                                          NSError *error) {
-//        if (!error) {
-//            
-//            
-//            self.userInfoFormVC.userData = (NSDictionary *)result; // The result is a dictionary
-//            
-//            
-//            self.userInfoFormVC.imageData = [[NSMutableData alloc] init]; // the image will be loaded in here
-//            
-//            NSURL *profilePictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [self.userInfoFormVC.userData objectForKey:@"id"]]];
-//            NSLog(@"profilePictureURl = %@",profilePictureURL);
-//            NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f]; // Facebook profile picture cache policy: Expires in 2 weeks
-//            NSLog(@"profilePictureURLRequest = %@", profilePictureURLRequest);
-//            [NSURLConnection connectionWithRequest:profilePictureURLRequest delegate:self.userInfoFormVC];
-//            
-//        }
-//    }];
-    
-    
+        
 }
 - (void) viewWillAppear:(BOOL)animated
 {
@@ -90,8 +63,6 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

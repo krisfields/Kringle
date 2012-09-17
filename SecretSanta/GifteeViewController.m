@@ -19,10 +19,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *gifteeLike3;
 @property (weak, nonatomic) IBOutlet UILabel *gifteeLike4;
 @property (weak, nonatomic) IBOutlet UILabel *gifteeLike5;
-@property (weak, nonatomic) IBOutlet UILabel *gifteeStalk1;
-@property (weak, nonatomic) IBOutlet UILabel *gifteeStalk2;
-@property (weak, nonatomic) IBOutlet UILabel *gifteeStalk3;
-@property (weak, nonatomic) IBOutlet UILabel *gifteeStalk4;
+@property (weak, nonatomic) IBOutlet UITextView *gifteeStalk1;
+
+@property (weak, nonatomic) IBOutlet UITextView *gifteeStalk2;
+@property (weak, nonatomic) IBOutlet UITextView *gifteeStalk3;
+@property (weak, nonatomic) IBOutlet UITextView *gifteeStalk4;
 @property (weak, nonatomic) IBOutlet UILabel *gifteeStreetAddress;
 @property (weak, nonatomic) IBOutlet UILabel *gifteeCity;
 @property (weak, nonatomic) IBOutlet UILabel *gifteeState;
@@ -70,16 +71,10 @@
     NSString *gifteeId = [[currentUserInExchange valueForKey:@"givingTo"] objectId];
     PFUser *giftee = [PFQuery getUserObjectWithId:gifteeId];
     [self setGifteeAttributes:giftee];
-    
-
-//        PFQuery *query = [PFQuery queryWithClassName:@"User"];
-//        [query whereKey:@"user" equalTo:giftee];
-//        [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-//            [self setGifteeAttributes:(PFUser *)object];
-//        }];
-//    }];
-
-    // Do any additional setup after loading the view from its nib.
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.navigationController.navigationBar.hidden = YES;
 }
 - (void) setGifteeAttributes:(PFUser *)giftee {
     self.gifteeName.text = [giftee valueForKey:@
